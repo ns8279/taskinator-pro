@@ -15,6 +15,7 @@ var createTask = function(taskText, taskDate, taskList) {
 
   //CHECK DUE DATE
   auditTask(taskLi);
+ 
 
 
   // append to ul list on the page
@@ -55,13 +56,7 @@ var saveTasks = function() {
 
 
 //new code here from the lesson
-// $(".list-group").on("click", "p", function() {
-//   console.log("<p> was clicked");
-// });
 
-// $(".list-group").on("click", "p", function() {
-//   console.log(this);
-// });
 
 $(".card .list-group").sortable( {
   connectWith: $(".card .list-group"),
@@ -211,21 +206,16 @@ $(".list-group").on("click", "span", function() {
   //swap out elements
   $(this).replaceWith(dateInput);
 
-
-
-
   //ENABLE JQUERY UI DATEPICKER
-  // dateInput.datepicker({
-  //   minDate: 1,
-  //   onClose: function() {
-  //     //when calendar is closed, force a "change" event on 'dateInput'
-  //     $(this).trigger("change");
-  //   }
-  // })
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function(){
+      //when calender is closed, force a change event on the dateinput 
+      $(this).trigger("change");
+    }
+  })
 
-
-
-  //automatically focus on new element
+  //automatically bring up the calender
   dateInput.trigger("focus");
 })
 
@@ -262,15 +252,17 @@ $(".list-group").on("change", "input[type='text']", function() {
   $(this).replaceWith(taskSpan);
 
   //PASS TASK'S <LI> ELEMENT INYO AUDITTASK() TO CHECK NEW DUE DATE
-  //auditTask($(taskSpan).closest(".list-group-item"));
+  auditTask($(taskSpan).closest(".list-group-item"));
+  
 })
 
 
 //this is the DATEPICKER CODE
+$("#modalDueDate").datepicker({
+  minDate: 1
+});
 
-// $("#modalDueDate").datepicker({
-//   minDate: 1
-// });
+
 
 
 
@@ -343,34 +335,33 @@ $("#trash").droppable({
 
 //functionality to highlight the dates area when overdue
 
+var auditTask = function(taskEl) {
+  //ensure element is getting to the function
+    //console.log(taskEl);
+  
+  //get date from the task element
+  var date = $(taskEl).find("span").text().trim();
+  //ensure it worked
+  console.log(date);
 
-// var auditTask = function(taskEl) {
-//   //to ensure element is getting to the function
-//   console.log(taskEl);
-//   //get date from the task element
-//   var date = $(taskEl)
-//   .find("span")
-//   .text()
-//   .trim();
-//   //ensure it worked
-//   console.log(date);
+  //convert to moment object at 5:00pm
+  var time = moment(date, "L").set("hour", 17);
+  //this should print out an object for the value of the date varibale but at 5:00pm of that date
+      //console.log(time);
 
-//   //convert to moment object at 05:00pm
-//   var time = moment(date, "L").set("hour", 17);
-//   //this should print out an object for the value of the date variable, but at 5pm of that date
-//   console.log(time);
+  //remove any old classes from element
+  $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
 
-//   //remove any old classes from element
-//   $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+  //add new class if task is near/over due date
+  if(moment().isAfter(time)) {
+    $(taskEl).addClass("list-group-item-danger");
+  }else if (Math.abs(moment().diff(time, "days")) <= 2) {
+    $(taskEl).addClass("list-group-item-warning");
+  }
 
-//   //apply new class if task is near/over due date
-//   if(moment().isAfter(time)) {
-//     $(taskEl).addClass("list-group-item-danger");
-//   }
-//   else if (Math.abs(moment().diff(time, "days")) <= 2) {
-//     $(taskEl).addClass("list-group-item-warning");
-//   }
-// }
+}
+
+
 
 
 
