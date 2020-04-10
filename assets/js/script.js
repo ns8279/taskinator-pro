@@ -16,8 +16,6 @@ var createTask = function(taskText, taskDate, taskList) {
   //CHECK DUE DATE
   auditTask(taskLi);
  
-
-
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
 };
@@ -29,10 +27,10 @@ var loadTasks = function() {
   if (!tasks) {
     tasks = {
       toDo: [
-        // {
-        // text: "Sample text to do",
-        // date: "04/07/2020"
-        // }
+         {
+         text: "Sample text to do",
+         date: "04/07/2020"
+        }
       ],
       inProgress: [],
       inReview: [],
@@ -158,6 +156,9 @@ $(".list-group").on("blur", "textarea", function() {
     .index();
 
     //this part was added after working with JOHN
+    console.log(tasks);
+    console.log(status);
+
     if(tasks[status].length == 0) {
       tasks[status].push({text: text, date: "04072020"}
       
@@ -170,10 +171,9 @@ $(".list-group").on("blur", "textarea", function() {
       console.log(tasks);
   
       // tasks[status][index].text = text;
-      tasks[status][index-1].text = text;
+      tasks[status][index].text = text;
     }
 
-   
     saveTasks();
 
 
